@@ -20,7 +20,15 @@ export default function LeadForm() {
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
-    const data = Object.fromEntries(new FormData(form).entries());
+    const data: Record<string, unknown> = Object.fromEntries(new FormData(form).entries());
+
+    // Attribute social/ad campaign traffic: forward UTM parameters so the CRM
+    // records which channel and campaign generated this lead.
+    const params = new URLSearchParams(window.location.search);
+    for (const key of ['utm_source', 'utm_medium', 'utm_campaign']) {
+      const value = params.get(key);
+      if (value) data[key] = value;
+    }
 
     setStatus('submitting');
     setMessage('');

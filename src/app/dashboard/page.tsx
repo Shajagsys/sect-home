@@ -1,8 +1,8 @@
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getSession } from '@/lib/auth';
 import { query } from '@/lib/db';
-import LeadsTable, { Lead } from './LeadsTable';
+import DashHeader from '@/components/DashHeader';
+import LeadsTable, { Lead, TeamMember } from './LeadsTable';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -14,10 +14,19 @@ export const metadata = {
 async function getLeads(): Promise<Lead[]> {
   const result = await query<Lead>(
     `SELECT l.id, l.name, l.email, l.phone, l.company, l.interest,
-            l.source, l.status, l.created_at::text AS created_at
+            l.source, l.status, l.value::float8 AS value, l.assigned_to,
+            l.created_at::text AS created_at, u.name AS assigned_to_name
      FROM leads l
+     LEFT JOIN users u ON u.id = l.assigned_to
      ORDER BY l.created_at DESC
      LIMIT 500`
+  );
+  return result.rows;
+}
+
+async function getTeam(): Promise<TeamMember[]> {
+  const result = await query<TeamMember>(
+    'SELECT id, name FROM users WHERE active ORDER BY name'
   );
   return result.rows;
 }
@@ -29,9 +38,10 @@ export default async function DashboardPage() {
   }
 
   let leads: Lead[] = [];
+  let team: TeamMember[] = [];
   let loadError = false;
   try {
-    leads = await getLeads();
+    [leads, team] = await Promise.all([getLeads(), getTeam()]);
   } catch (err) {
     console.error('Dashboard load error:', err);
     loadError = true;
@@ -41,28 +51,13 @@ export default async function DashboardPage() {
     acc[lead.status] = (acc[lead.status] || 0) + 1;
     return acc;
   }, {});
+  const openPipelineValue = leads
+    .filter((l) => !['won', 'lost'].includes(l.status))
+    .reduce((sum, l) => sum + (l.value || 0), 0);
 
   return (
     <>
-      <header className="site-header">
-        <div className="container">
-          <Link href="/" className="brand">
-            <span className="brand-mark">SE</span>
-            <span className="brand-name">
-              SecureEdge CRM
-              <small>Leads &amp; Pipeline</small>
-            </span>
-          </Link>
-          <nav className="main-nav">
-            <a href="/">Website</a>
-            <form action="/api/auth/logout" method="post" style={{ display: 'inline' }}>
-              <button className="login-link" type="submit" style={{ border: 'none' }}>
-                Logout
-              </button>
-            </form>
-          </nav>
-        </div>
-      </header>
+      <DashHeader session={session} />
 
       <main className="section">
         <div className="container">
@@ -83,16 +78,23 @@ export default async function DashboardPage() {
               <div className="stat-value">{counts['new'] || 0}</div>
             </div>
             <div className="stat-card">
-              <div className="stat-label">Contacted</div>
-              <div className="stat-value">{counts['contacted'] || 0}</div>
-            </div>
-            <div className="stat-card">
-              <div className="stat-label">Qualified</div>
-              <div className="stat-value">{counts['qualified'] || 0}</div>
+              <div className="stat-label">In Progress</div>
+              <div className="stat-value">
+                {(counts['contacted'] || 0) +
+                  (counts['qualified'] || 0) +
+                  (counts['proposal'] || 0) +
+                  (counts['negotiation'] || 0)}
+              </div>
             </div>
             <div className="stat-card">
               <div className="stat-label">Won</div>
               <div className="stat-value">{counts['won'] || 0}</div>
+            </div>
+            <div className="stat-card">
+              <div className="stat-label">Open Pipeline</div>
+              <div className="stat-value">
+                ₹{openPipelineValue.toLocaleString('en-IN')}
+              </div>
             </div>
           </div>
 
@@ -105,7 +107,7 @@ export default async function DashboardPage() {
               </p>
             </div>
           ) : (
-            <LeadsTable initialLeads={leads} />
+            <LeadsTable initialLeads={leads} team={team} />
           )}
         </div>
       </main>

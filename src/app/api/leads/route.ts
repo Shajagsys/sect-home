@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 import { getSession } from '@/lib/auth';
+import { logActivity } from '@/lib/activity';
+import { notifyNewLead } from '@/lib/mailer';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -22,6 +24,12 @@ export async function POST(request: NextRequest) {
   const company = String(body.company || '').trim().slice(0, 160) || null;
   const interest = String(body.interest || '').trim().slice(0, 200) || null;
   const message = String(body.message || '').trim().slice(0, 2000) || null;
+  const utmSource = String(body.utm_source || '').trim().slice(0, 100) || null;
+  const utmMedium = String(body.utm_medium || '').trim().slice(0, 100) || null;
+  const utmCampaign = String(body.utm_campaign || '').trim().slice(0, 100) || null;
+  // Campaign traffic (e.g. a LinkedIn/Facebook ad with ?utm_source=) is
+  // attributed to that channel instead of the generic "website" source.
+  const source = utmSource ? `social:${utmSource}` : 'website';
 
   if (!name) {
     return NextResponse.json({ error: 'Name is required' }, { status: 400 });
@@ -32,12 +40,16 @@ export async function POST(request: NextRequest) {
 
   try {
     const result = await query<{ id: number }>(
-      `INSERT INTO leads (name, email, phone, company, interest, message, source)
-       VALUES ($1, $2, $3, $4, $5, $6, 'website')
+      `INSERT INTO leads (name, email, phone, company, interest, message, source,
+                          utm_source, utm_medium, utm_campaign)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
        RETURNING id`,
-      [name, email, phone, company, interest, message]
+      [name, email, phone, company, interest, message, source, utmSource, utmMedium, utmCampaign]
     );
-    return NextResponse.json({ ok: true, id: result.rows[0].id }, { status: 201 });
+    const id = result.rows[0].id;
+    await logActivity(id, 'created', `Lead captured from ${source}`);
+    notifyNewLead({ id, name, email, phone, company, interest, message, source });
+    return NextResponse.json({ ok: true, id }, { status: 201 });
   } catch (err) {
     console.error('Lead insert error:', err);
     return NextResponse.json({ error: 'Server error. Please try again later.' }, { status: 500 });
@@ -54,7 +66,8 @@ export async function GET() {
   try {
     const result = await query(
       `SELECT l.id, l.name, l.email, l.phone, l.company, l.interest, l.message,
-              l.source, l.status, l.created_at, u.name AS assigned_to_name
+              l.source, l.status, l.value, l.assigned_to, l.created_at,
+              u.name AS assigned_to_name
        FROM leads l
        LEFT JOIN users u ON u.id = l.assigned_to
        ORDER BY l.created_at DESC

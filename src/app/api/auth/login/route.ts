@@ -27,7 +27,9 @@ export async function POST(request: NextRequest) {
       email: string;
       password_hash: string;
       role: string;
-    }>('SELECT id, name, email, password_hash, role FROM users WHERE email = $1', [email]);
+    }>('SELECT id, name, email, password_hash, role FROM users WHERE email = $1 AND active', [
+      email,
+    ]);
 
     const user = result.rows[0];
     const valid = user ? await bcrypt.compare(password, user.password_hash) : false;

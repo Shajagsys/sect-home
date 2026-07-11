@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import SiteHeader from '@/components/SiteHeader';
 import LeadForm from '@/components/LeadForm';
+import { SOCIAL_LINKS } from '@/lib/company';
 
 const SERVICES = [
   {
@@ -127,6 +128,20 @@ export default function HomePage() {
         <div className="container">
           <div>
             © {new Date().getFullYear()} SecureEdge Cyber Technologies LLP. All rights reserved.
+          </div>
+          <div className="social-links" aria-label="Follow us on social media">
+            {SOCIAL_LINKS.map((s) => (
+              <a
+                key={s.label}
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                title={s.label}
+                aria-label={s.label}
+              >
+                {s.short}
+              </a>
+            ))}
           </div>
           <div>
             <Link href="/login">Employee / CRM Login</Link>
