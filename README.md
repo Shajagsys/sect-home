@@ -6,14 +6,39 @@ Digital Information Security services, plus sales & support for renowned securit
 
 ## Features
 
+### Website & lead generation
 - **Home page** with company profile, services, product catalogue and a **Login link on the
   right side of the header** (plus a "CRM Login" button in the hero and a footer link).
-- **Lead generation**: the "Get a Quote / Request a Demo" form on the home page saves every
-  enquiry directly into PostgreSQL as a lead.
-- **CRM dashboard** (`/dashboard`): pipeline stats and a leads table with inline status
-  updates (new → contacted → qualified → proposal → won/lost).
+- **Lead capture form** ("Get a Quote / Request a Demo") that saves every enquiry into
+  PostgreSQL, with **UTM campaign attribution** (`?utm_source=linkedin&utm_campaign=...`
+  traffic is tagged with its social channel automatically).
+- **Social media links** in the footer (configurable via `NEXT_PUBLIC_SOCIAL_*` env vars).
+- **Inbound webhook API** (`POST /api/webhooks/leads`, per-channel API keys) to collect
+  leads from Facebook/Instagram Lead Ads, LinkedIn Lead Gen Forms, Google Ads, landing
+  pages and chatbots — directly or via Zapier / Make / n8n.
+- **Email notifications** to your team on every new lead (SMTP via nodemailer, optional).
+
+### CRM
+- **Leads dashboard** with pipeline stats, **search and filters** (text, stage, source,
+  assignee), inline stage changes and **lead assignment to team members**.
+- **Click-to-call** (`tel:`) and **click-to-WhatsApp** (`wa.me` with a prefilled message)
+  from the leads table and the lead detail page.
+- **Lead detail page** with the full **end-to-end lifecycle** (new → contacted → qualified
+  → proposal → negotiation → won/lost), a visual stage track, estimated deal value, and a
+  **notes & activity timeline** that auto-logs every stage change, assignment, value change
+  and proposal event.
+- **Proposal creator**: line-item quotations with GST/discount and INR totals, a printable
+  proposal document (Print / Save as PDF), and a status flow (draft → sent →
+  accepted/rejected) that advances the lead automatically — accepting a proposal wins the
+  lead.
+- **Reports & analytics**: win rate, open pipeline value, won value, pipeline funnel,
+  leads by source, leads per month, and top interests.
+- **Team management (admin)**: add members, set roles (admin/sales), enable/disable
+  accounts, reset passwords.
+- **Webhook key management (admin)**: generate/disable per-channel API keys with copyable
+  integration instructions.
 - **Authentication**: email + password login (bcrypt-hashed passwords, signed HTTP-only
-  session cookie), with middleware protecting the dashboard.
+  session cookie), role-based access, middleware protecting the dashboard.
 
 ## Tech stack
 
