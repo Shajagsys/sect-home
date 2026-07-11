@@ -1,13 +1,16 @@
 :root {
-  --navy: #0a1d3b;
-  --navy-2: #10294f;
-  --accent: #00b4d8;
-  --accent-dark: #0090ad;
-  --text: #1c2734;
-  --muted: #5b6b7c;
-  --bg: #f4f7fb;
+  /* Sea green (primary) + saffron (accent) theme */
+  --navy: #0d3b2e;          /* deep sea green — header, footer, headings */
+  --navy-2: #14523f;        /* mid sea green */
+  --seagreen: #2e8b57;      /* classic sea green */
+  --accent: #ff9933;        /* saffron — buttons, highlights */
+  --accent-dark: #e07f1a;   /* deep saffron (hover) */
+  --on-accent: #3b2305;     /* dark text on saffron for contrast */
+  --text: #1e2b26;
+  --muted: #55685f;
+  --bg: #f3f8f5;
   --card: #ffffff;
-  --border: #dde5ee;
+  --border: #d9e6de;
   --danger: #c0392b;
   --success: #1e8e5a;
 }
@@ -26,7 +29,7 @@ body {
 }
 
 a {
-  color: var(--accent-dark);
+  color: var(--seagreen);
   text-decoration: none;
 }
 
@@ -65,7 +68,7 @@ a {
   width: 38px;
   height: 38px;
   border-radius: 8px;
-  background: linear-gradient(135deg, var(--accent), #0077b6);
+  background: linear-gradient(135deg, var(--accent), var(--seagreen));
   display: flex;
   align-items: center;
   justify-content: center;
@@ -86,7 +89,7 @@ a {
   display: block;
   font-weight: 400;
   font-size: 11px;
-  color: #aebfd6;
+  color: #a8cdbb;
   letter-spacing: 0.4px;
 }
 
@@ -98,7 +101,7 @@ a {
 }
 
 .main-nav a {
-  color: #d6e2f2;
+  color: #d7ebe0;
   font-size: 14.5px;
   font-weight: 500;
 }
@@ -110,7 +113,7 @@ a {
 /* Login link pinned to the right side of the header */
 .login-link {
   background: var(--accent);
-  color: #fff !important;
+  color: var(--on-accent) !important;
   padding: 9px 22px;
   border-radius: 6px;
   font-weight: 700;
@@ -126,7 +129,7 @@ a {
 
 /* ---------- Hero ---------- */
 .hero {
-  background: linear-gradient(160deg, var(--navy) 0%, var(--navy-2) 55%, #123a6b 100%);
+  background: linear-gradient(160deg, var(--navy) 0%, var(--navy-2) 55%, #1e6b4f 100%);
   color: #fff;
   padding: 84px 0 90px;
 }
@@ -144,7 +147,7 @@ a {
 .hero p {
   margin-top: 18px;
   max-width: 640px;
-  color: #c3d2e6;
+  color: #c9e4d6;
   font-size: 17px;
 }
 
@@ -167,7 +170,7 @@ a {
 
 .btn-primary {
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
 }
 
 .btn-primary:hover {
@@ -175,7 +178,7 @@ a {
 }
 
 .btn-outline {
-  border: 2px solid #6d84a5;
+  border: 2px solid #6fa58c;
   color: #fff;
 }
 
@@ -189,7 +192,7 @@ a {
 }
 
 .section-alt {
-  background: #eaf0f8;
+  background: #e7f2ec;
 }
 
 .section h2 {
@@ -233,8 +236,8 @@ a {
 
 .badge {
   display: inline-block;
-  background: #e1f5fb;
-  color: #056d84;
+  background: #ffeeda;
+  color: #9a5a0a;
   font-size: 12px;
   font-weight: 700;
   padding: 3px 10px;
@@ -411,7 +414,7 @@ table.leads td {
 }
 
 table.leads th {
-  background: #f0f4fa;
+  background: #edf5f0;
   color: var(--navy);
   font-size: 12.5px;
   text-transform: uppercase;
@@ -431,7 +434,7 @@ table.leads tr:last-child td {
   text-transform: capitalize;
 }
 
-.status-new { background: #e1f5fb; color: #056d84; }
+.status-new { background: #ffeeda; color: #9a5a0a; }
 .status-contacted { background: #fff3d6; color: #8a6100; }
 .status-qualified { background: #e7e3fb; color: #4b3ba6; }
 .status-proposal { background: #ffe4d1; color: #a34a00; }
@@ -448,7 +451,7 @@ table.leads tr:last-child td {
 /* ---------- Footer ---------- */
 .site-footer {
   background: var(--navy);
-  color: #aebfd6;
+  color: #a8cdbb;
   padding: 36px 0;
   font-size: 14px;
   margin-top: 40px;
@@ -462,7 +465,7 @@ table.leads tr:last-child td {
 }
 
 .site-footer a {
-  color: #d6e2f2;
+  color: #d7ebe0;
 }
 
 /* ---------- Responsive ---------- */
