@@ -86,6 +86,32 @@ Digital Information Security services, plus sales & support for renowned securit
 
 ## Getting started
 
+### Quick start (one command)
+
+With PostgreSQL installed and running locally:
+
+```bash
+bash scripts/setup-local-db.sh        # Linux / macOS
+scripts\setup-local-db.bat            # Windows
+```
+
+This creates the `secureedge_crm` database, writes `.env` (with a random
+`AUTH_SECRET`), installs dependencies, applies the schema, and seeds **mock logins**:
+
+| Where | Email | Password / Code | Role |
+|---|---|---|---|
+| `/login` | admin@secureedge.in | `Admin@123` | Admin |
+| `/login` | priya@secureedge.in | `Sales@123` | Sales |
+| `/login` | arjun@secureedge.in | `Sales@123` | Sales |
+| `/portal` | client1@example.com | `Client@123` | Client (Maharashtra, IGST) |
+| `/portal` | client2@example.com | `Client@123` | Client (Karnataka, CGST+SGST) |
+
+Then run `npm run dev` and open http://localhost:3000.
+Different Postgres credentials? Override: `DB_USER=me DB_PASSWORD=secret bash scripts/setup-local-db.sh`.
+> ⚠ Mock credentials only — change them before production.
+
+### Manual setup
+
 1. **Install dependencies**
 
    ```bash
