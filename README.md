@@ -40,6 +40,44 @@ Digital Information Security services, plus sales & support for renowned securit
 - **Authentication**: email + password login (bcrypt-hashed passwords, signed HTTP-only
   session cookie), role-based access, middleware protecting the dashboard.
 
+### Client Management
+- **Client register** with GSTIN, GST state (place of supply), billing address and credit
+  limit; won leads convert to clients in one call.
+- **Client ledger**: every invoice (debit) and payment (credit) posts automatically;
+  outstanding / credit balance is always current.
+- **Client score** (0–100) computed from payment behaviour, overdue invoices, lifetime
+  revenue and recent activity, with Excellent / Good / At Risk / Critical bands.
+- **Client conversations**: two-way message threads between the team (dashboard) and the
+  client (portal).
+- **Client portal** (`/portal`): clients sign in with email + access code to see their
+  invoices (view & print), projects and renewal dates, credit balance and limit, raise
+  project / renewal / support requests, and chat with the team.
+
+### Projects & Contract Workflow
+- **Projects** linked to clients (and back to the originating lead), with value, dates,
+  renewal date and a named **project signer** (client-side authorised signatory).
+- **Contract e-sign workflow**: draft terms (template pre-filled), send a tokenised public
+  signing link, the signer reviews and signs by typing their name (timestamp + IP
+  recorded), or declines.
+- **Invoice on signature**: once signed, one click generates a company-branded GST tax
+  invoice from the project value and posts it to the client ledger. Invoicing is blocked
+  until the contract is signed.
+
+### Accounts (Indian GST compliant)
+- **Tax invoices**: FY-series numbering (INV-2026-27-…), HSN/SAC per line, automatic
+  CGST+SGST vs IGST based on place of supply, discount, amount in words (lakh/crore),
+  bank details and authorised-signatory block, printable with company branding.
+- **Payments & receivables**: record part/full payments (UTR reference), automatic
+  partial/paid status and ledger credits; cancellation raises a credit note.
+- **Purchases**: purchase requests → admin approval → ordered → received → billed
+  lifecycle, plus **purchase invoices** (vendor bills) capturing input tax credit,
+  attributable to projects for costing.
+- **GST reports**: outward (sales) and inward (ITC) registers for any date range with
+  document-level detail and **net GST payable**.
+- **Finance analytics**: P&L (revenue vs expenses, ex-GST) weekly / monthly / quarterly /
+  custom dates, margin, cash collected, GST position, and **per-project / per-lead
+  profitability** with margins.
+
 ## Tech stack
 
 - **Next.js 14** (App Router, React 18, TypeScript) — frontend + Node.js API routes

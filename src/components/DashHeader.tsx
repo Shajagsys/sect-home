@@ -14,10 +14,12 @@ export default function DashHeader({ session }: { session: SessionPayload }) {
         </Link>
         <nav className="main-nav" aria-label="Dashboard navigation">
           <Link href="/dashboard">Leads</Link>
+          <Link href="/dashboard/clients">Clients</Link>
+          <Link href="/dashboard/projects">Projects</Link>
+          <Link href="/dashboard/accounts">Accounts</Link>
           <Link href="/dashboard/reports">Reports</Link>
           {session.role === 'admin' && <Link href="/dashboard/users">Team</Link>}
           {session.role === 'admin' && <Link href="/dashboard/webhooks">Webhooks</Link>}
-          <Link href="/">Website</Link>
           <form action="/api/auth/logout" method="post" style={{ display: 'inline' }}>
             <button className="login-link" type="submit" style={{ border: 'none', cursor: 'pointer' }}>
               Logout

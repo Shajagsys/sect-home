@@ -9,6 +9,13 @@ export const COMPANY = {
   email: process.env.NEXT_PUBLIC_COMPANY_EMAIL || 'shajagsystems@gmail.com',
   phone: process.env.NEXT_PUBLIC_COMPANY_PHONE || '',
   whatsapp: process.env.NEXT_PUBLIC_COMPANY_WHATSAPP || '', // digits only, e.g. 919876543210
+  // Statutory details for invoices — update via env once finalised.
+  address: process.env.NEXT_PUBLIC_COMPANY_ADDRESS || 'Registered Office, India',
+  gstin: process.env.NEXT_PUBLIC_COMPANY_GSTIN || '',
+  stateCode: process.env.NEXT_PUBLIC_COMPANY_STATE_CODE || '29', // GST state code
+  pan: process.env.NEXT_PUBLIC_COMPANY_PAN || '',
+  bankDetails: process.env.NEXT_PUBLIC_COMPANY_BANK ||
+    'Bank transfer details available on request',
 };
 
 export const SOCIAL_LINKS: { label: string; short: string; href: string }[] = [

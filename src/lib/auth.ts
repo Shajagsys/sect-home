@@ -55,3 +55,42 @@ export const sessionCookieOptions = {
   path: '/',
   maxAge: SESSION_TTL_SECONDS,
 };
+
+/* ---------- Client portal sessions (separate cookie + role) ---------- */
+
+export const PORTAL_COOKIE = 'sect_portal_session';
+
+export interface PortalSession {
+  clientId: number;
+  name: string;
+  email: string;
+}
+
+export async function createPortalToken(payload: PortalSession): Promise<string> {
+  return new SignJWT({ email: payload.email, name: payload.name, portal: true })
+    .setProtectedHeader({ alg: 'HS256' })
+    .setSubject(String(payload.clientId))
+    .setIssuedAt()
+    .setExpirationTime(`${SESSION_TTL_SECONDS}s`)
+    .sign(getSecretKey());
+}
+
+export async function verifyPortalToken(token: string): Promise<PortalSession | null> {
+  try {
+    const { payload } = await jwtVerify(token, getSecretKey());
+    if (!payload.portal) return null;
+    return {
+      clientId: Number(payload.sub),
+      name: String(payload.name),
+      email: String(payload.email),
+    };
+  } catch {
+    return null;
+  }
+}
+
+export async function getPortalSession(): Promise<PortalSession | null> {
+  const token = cookies().get(PORTAL_COOKIE)?.value;
+  if (!token) return null;
+  return verifyPortalToken(token);
+}
