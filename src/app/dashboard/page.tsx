@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { getSession } from '@/lib/auth';
 import { query } from '@/lib/db';
@@ -31,6 +32,33 @@ async function getTeam(): Promise<TeamMember[]> {
   return result.rows;
 }
 
+interface ActionCenter {
+  overdue_invoices: number;
+  renewals_due: number;
+  new_requests: number;
+  unread_client_msgs: number;
+}
+
+async function getActionCenter(): Promise<ActionCenter> {
+  // Passive overdue detection: promote past-due open invoices on dashboard load.
+  await query(
+    `UPDATE invoices SET status = 'overdue'
+     WHERE status IN ('sent', 'partial') AND due_date < CURRENT_DATE`
+  );
+  const result = await query<ActionCenter>(
+    `SELECT
+       (SELECT COUNT(*) FROM invoices WHERE status = 'overdue')::int AS overdue_invoices,
+       (SELECT COUNT(*) FROM projects
+        WHERE renewal_date BETWEEN CURRENT_DATE AND CURRENT_DATE + 60
+          AND status NOT IN ('closed'))::int AS renewals_due,
+       (SELECT COUNT(*) FROM project_requests WHERE status = 'new')::int AS new_requests,
+       (SELECT COUNT(*) FROM client_messages m
+        WHERE m.sender = 'client'
+          AND m.created_at > now() - interval '7 days')::int AS unread_client_msgs`
+  );
+  return result.rows[0];
+}
+
 export default async function DashboardPage() {
   const session = await getSession();
   if (!session) {
@@ -39,9 +67,10 @@ export default async function DashboardPage() {
 
   let leads: Lead[] = [];
   let team: TeamMember[] = [];
+  let actions: ActionCenter | null = null;
   let loadError = false;
   try {
-    [leads, team] = await Promise.all([getLeads(), getTeam()]);
+    [leads, team, actions] = await Promise.all([getLeads(), getTeam(), getActionCenter()]);
   } catch (err) {
     console.error('Dashboard load error:', err);
     loadError = true;
@@ -97,6 +126,35 @@ export default async function DashboardPage() {
               </div>
             </div>
           </div>
+
+          {actions && (actions.overdue_invoices > 0 || actions.renewals_due > 0 ||
+            actions.new_requests > 0 || actions.unread_client_msgs > 0) && (
+            <div className="card" style={{ marginBottom: 24, borderLeft: '4px solid var(--accent)' }}>
+              <h3>Action Center</h3>
+              <div style={{ display: 'flex', gap: 18, flexWrap: 'wrap', marginTop: 8, fontSize: 14 }}>
+                {actions.overdue_invoices > 0 && (
+                  <Link href="/dashboard/accounts/invoices">
+                    ⚠️ <strong>{actions.overdue_invoices}</strong> overdue invoice{actions.overdue_invoices > 1 ? 's' : ''}
+                  </Link>
+                )}
+                {actions.renewals_due > 0 && (
+                  <Link href="/dashboard/projects">
+                    🔄 <strong>{actions.renewals_due}</strong> renewal{actions.renewals_due > 1 ? 's' : ''} due in 60 days
+                  </Link>
+                )}
+                {actions.new_requests > 0 && (
+                  <Link href="/dashboard/clients">
+                    📥 <strong>{actions.new_requests}</strong> new portal request{actions.new_requests > 1 ? 's' : ''}
+                  </Link>
+                )}
+                {actions.unread_client_msgs > 0 && (
+                  <Link href="/dashboard/clients">
+                    💬 <strong>{actions.unread_client_msgs}</strong> client message{actions.unread_client_msgs > 1 ? 's' : ''} this week
+                  </Link>
+                )}
+              </div>
+            </div>
+          )}
 
           {loadError ? (
             <div className="card">

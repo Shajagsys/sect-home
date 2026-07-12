@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 import { getPortalSession } from '@/lib/auth';
+import { notifyTeam } from '@/lib/mailer';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -30,6 +31,12 @@ export async function POST(request: NextRequest) {
       `INSERT INTO project_requests (client_id, project_id, type, title, details)
        VALUES ($1, $2, $3, $4, $5) RETURNING id`,
       [session.clientId, projectId, type, title, details]
+    );
+    notifyTeam(
+      `Portal request (${type.replace('_', ' ')}): ${title}`,
+      `<p><strong>${session.name}</strong> (${session.email}) raised a ${type.replace('_', ' ')} request:</p>
+       <p><strong>${title}</strong></p>${details ? `<p>${details}</p>` : ''}
+       <p><a href="${process.env.APP_URL || 'http://localhost:3000'}/dashboard/clients/${session.clientId}">Open client in CRM</a></p>`
     );
     return NextResponse.json({ ok: true, id: result.rows[0].id }, { status: 201 });
   } catch (err) {

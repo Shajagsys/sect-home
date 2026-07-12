@@ -92,6 +92,14 @@ export default async function GstPage({
             <label style={{ fontSize: 14 }}>To <input type="date" name="to" defaultValue={to}
               style={{ padding: '8px 10px', border: '1px solid var(--border)', borderRadius: 6, marginLeft: 6 }} /></label>
             <button className="btn btn-primary btn-sm" type="submit">Apply</button>
+            <a className="btn btn-outline-dark btn-sm"
+               href={`/api/gst-export?direction=outward&from=${from}&to=${to}`}>
+              ⬇ Export Outward CSV
+            </a>
+            <a className="btn btn-outline-dark btn-sm"
+               href={`/api/gst-export?direction=inward&from=${from}&to=${to}`}>
+              ⬇ Export Inward CSV
+            </a>
           </form>
 
           <div className="stats-row">

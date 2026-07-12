@@ -62,3 +62,28 @@ export function notifyNewLead(lead: NewLeadInfo): void {
     console.error('Lead notification email failed:', err)
   );
 }
+
+/** Generic team notification (portal requests, client messages, signed contracts). */
+async function sendTeamNotification(subject: string, html: string): Promise<void> {
+  const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, NOTIFY_EMAILS, MAIL_FROM } = process.env;
+  if (!SMTP_HOST || !NOTIFY_EMAILS) return;
+  const transporter = nodemailer.createTransport({
+    host: SMTP_HOST,
+    port: Number(SMTP_PORT || 587),
+    secure: Number(SMTP_PORT) === 465,
+    auth: SMTP_USER && SMTP_PASS ? { user: SMTP_USER, pass: SMTP_PASS } : undefined,
+  });
+  await transporter.sendMail({
+    from: MAIL_FROM || SMTP_USER || 'crm@secureedge.local',
+    to: NOTIFY_EMAILS,
+    subject,
+    html,
+  });
+}
+
+/** Fire-and-forget team notification. */
+export function notifyTeam(subject: string, html: string): void {
+  sendTeamNotification(subject, html).catch((err) =>
+    console.error('Team notification email failed:', err)
+  );
+}

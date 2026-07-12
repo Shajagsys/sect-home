@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/db';
 import { getPortalSession } from '@/lib/auth';
+import { notifyTeam } from '@/lib/mailer';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -24,6 +25,11 @@ export async function POST(request: NextRequest) {
       `INSERT INTO client_messages (client_id, sender, body)
        VALUES ($1, 'client', $2) RETURNING id, created_at::text AS created_at`,
       [session.clientId, text]
+    );
+    notifyTeam(
+      `Portal message from ${session.name}`,
+      `<p><strong>${session.name}</strong> (${session.email}) wrote:</p><blockquote>${text}</blockquote>
+       <p><a href="${process.env.APP_URL || 'http://localhost:3000'}/dashboard/clients/${session.clientId}">Reply in CRM</a></p>`
     );
     return NextResponse.json(
       {

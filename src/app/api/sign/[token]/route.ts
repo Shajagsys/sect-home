@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { query } from '@/lib/db';
+import { notifyTeam } from '@/lib/mailer';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -57,6 +58,11 @@ export async function POST(request: NextRequest, { params }: { params: { token: 
     await query(
       `UPDATE projects SET status = 'signed' WHERE id = $1 AND status IN ('draft', 'contract_sent')`,
       [c.project_id]
+    );
+    notifyTeam(
+      `Contract signed: project #${c.project_id}`,
+      `<p><strong>${signedName}</strong> signed contract #${c.id}.</p>
+       <p><a href="${process.env.APP_URL || 'http://localhost:3000'}/dashboard/projects/${c.project_id}">Open project — you can now generate the invoice</a></p>`
     );
 
     return NextResponse.json({ ok: true, status: 'signed' });

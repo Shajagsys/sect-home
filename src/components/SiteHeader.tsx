@@ -15,6 +15,7 @@ export default function SiteHeader() {
           <a href="/#services">Services</a>
           <a href="/#products">Products</a>
           <a href="/#contact">Get a Quote</a>
+          <Link href="/portal">Client Portal</Link>
           {/* Login link on the right side of the page header */}
           <Link href="/login" className="login-link">
             Login

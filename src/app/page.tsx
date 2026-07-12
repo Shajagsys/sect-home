@@ -144,6 +144,8 @@ export default function HomePage() {
             ))}
           </div>
           <div>
+            <Link href="/portal">Client Portal</Link>
+            {' · '}
             <Link href="/login">Employee / CRM Login</Link>
           </div>
         </div>

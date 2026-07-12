@@ -74,6 +74,25 @@ export default function LeadDetail({
   const [valueInput, setValueInput] = useState(String(initialLead.value || ''));
   const [error, setError] = useState('');
   const [savingNote, setSavingNote] = useState(false);
+  const [converting, setConverting] = useState(false);
+
+  async function convertToClient() {
+    setConverting(true);
+    setError('');
+    try {
+      const res = await fetch('/api/clients', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ from_lead_id: lead.id }),
+      });
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.error || 'Failed to convert lead');
+      router.push(`/dashboard/clients/${body.id}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to convert lead');
+      setConverting(false);
+    }
+  }
 
   async function patchLead(patch: Record<string, unknown>) {
     setError('');
@@ -169,6 +188,15 @@ export default function LeadDetail({
             <Link href={`/dashboard/leads/${lead.id}/proposals/new`} className="action-chip proposal">
               📄 Create Proposal
             </Link>
+            <button
+              type="button"
+              className="action-chip proposal"
+              style={{ border: '1px solid #f4d5ac', cursor: 'pointer', font: 'inherit', fontSize: 12.5, fontWeight: 600 }}
+              onClick={convertToClient}
+              disabled={converting}
+            >
+              {converting ? 'Converting…' : '🤝 Convert to Client'}
+            </button>
           </div>
 
           <dl className="lead-meta">
