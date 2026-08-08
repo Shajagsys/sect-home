@@ -12,7 +12,7 @@ export default function SiteHeader() {
           </span>
         </Link>
         <nav className="main-nav" aria-label="Main navigation">
-          <a href="/#services">Services</a>
+          <Link href="/services">Services</Link>
           <a href="/#products">Products</a>
           <a href="/#contact">Get a Quote</a>
           <Link href="/portal">Client Portal</Link>

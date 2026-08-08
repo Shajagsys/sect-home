@@ -22,26 +22,30 @@ export const SOCIAL_LINKS: { label: string; short: string; href: string }[] = [
   {
     label: 'LinkedIn',
     short: 'in',
-    href: process.env.NEXT_PUBLIC_SOCIAL_LINKEDIN || 'https://www.linkedin.com/company/secureedge-cyber-technologies',
+    href: process.env.NEXT_PUBLIC_SOCIAL_LINKEDIN || 'https://www.linkedin.com/in/sercureedge-cyber-tech-665039427',
   },
   {
     label: 'X (Twitter)',
     short: 'X',
-    href: process.env.NEXT_PUBLIC_SOCIAL_X || 'https://x.com/secureedgecyber',
+    href: process.env.NEXT_PUBLIC_SOCIAL_X || 'https://x.com/SercureEdg7wzu',
   },
   {
     label: 'Facebook',
     short: 'f',
-    href: process.env.NEXT_PUBLIC_SOCIAL_FACEBOOK || 'https://www.facebook.com/secureedgecyber',
+    href: process.env.NEXT_PUBLIC_SOCIAL_FACEBOOK || 'https://www.facebook.com/share/1BkdcRMeMA/',
   },
   {
     label: 'Instagram',
     short: 'ig',
-    href: process.env.NEXT_PUBLIC_SOCIAL_INSTAGRAM || 'https://www.instagram.com/secureedgecyber',
+    href:
+      process.env.NEXT_PUBLIC_SOCIAL_INSTAGRAM ||
+      'https://www.instagram.com/sercureedge_cyber_tech?utm_source=qr&igsh=ZHk3aTkxMnlnd3N6',
   },
   {
     label: 'YouTube',
     short: 'yt',
-    href: process.env.NEXT_PUBLIC_SOCIAL_YOUTUBE || 'https://www.youtube.com/@secureedgecyber',
+    href:
+      process.env.NEXT_PUBLIC_SOCIAL_YOUTUBE ||
+      'https://youtube.com/@sercureedgecybertech?si=7iWtI6SrF6FTIWL7',
   },
 ];

@@ -37,7 +37,7 @@ set DATABASE_URL=postgres://%DB_USER%:%DB_PASSWORD%@%DB_HOST%:%DB_PORT%/%DB_NAME
 
 if not exist .env (
   echo ==^> Writing .env...
-  for /f %%s in ('node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"') do set AUTH_SECRET=%%s
+  for /f %%s in ('node "%~dp0gen-secret.js"') do set AUTH_SECRET=%%s
   (
     echo DATABASE_URL=%DATABASE_URL%
     echo AUTH_SECRET=%AUTH_SECRET%

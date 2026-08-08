@@ -57,7 +57,7 @@ echo "==> Writing .env (kept as-is if it already exists)..."
 if [ -f .env ]; then
   echo "    .env already exists — not touching it. Make sure DATABASE_URL points at $DB_NAME."
 else
-  AUTH_SECRET="$(node -e "console.log(require('crypto').randomBytes(32).toString('hex'))")"
+  AUTH_SECRET="$(node "$(dirname "$0")/gen-secret.js")"
   {
     echo "DATABASE_URL=$DATABASE_URL"
     echo "AUTH_SECRET=$AUTH_SECRET"
