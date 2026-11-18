@@ -1,4 +1,5 @@
 /* Creates (or updates) the admin user from ADMIN_EMAIL / ADMIN_PASSWORD. */
+require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const { Client } = require('pg');
 

@@ -6,16 +6,18 @@
 export const COMPANY = {
   name: 'SecureEdge Cyber Technologies LLP',
   tagline: 'IT · Cyber Security · Digital Information Security',
-  email: process.env.NEXT_PUBLIC_COMPANY_EMAIL || 'shajagsystems@gmail.com',
-  phone: process.env.NEXT_PUBLIC_COMPANY_PHONE || '',
-  whatsapp: process.env.NEXT_PUBLIC_COMPANY_WHATSAPP || '', // digits only, e.g. 919876543210
+  email: process.env.NEXT_PUBLIC_COMPANY_EMAIL || 'contact@sectech.app',
+  phone: process.env.NEXT_PUBLIC_COMPANY_PHONE || '+91 9812451305',
+  whatsapp: process.env.NEXT_PUBLIC_COMPANY_WHATSAPP || '919812451305', // digits only
   // Statutory details for invoices — update via env once finalised.
-  address: process.env.NEXT_PUBLIC_COMPANY_ADDRESS || 'Registered Office, India',
+  address:
+    process.env.NEXT_PUBLIC_COMPANY_ADDRESS ||
+    'Shop No.28, Sohna Road, Central Market Dharuhera, Rewari 123106',
   gstin: process.env.NEXT_PUBLIC_COMPANY_GSTIN || '',
-  stateCode: process.env.NEXT_PUBLIC_COMPANY_STATE_CODE || '29', // GST state code
+  stateCode: process.env.NEXT_PUBLIC_COMPANY_STATE_CODE || '06', // Haryana GST state code
   pan: process.env.NEXT_PUBLIC_COMPANY_PAN || '',
-  bankDetails: process.env.NEXT_PUBLIC_COMPANY_BANK ||
-    'Bank transfer details available on request',
+  bankDetails:
+    process.env.NEXT_PUBLIC_COMPANY_BANK || 'Bank transfer details available on request',
 };
 
 export const SOCIAL_LINKS: { label: string; short: string; href: string }[] = [

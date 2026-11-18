@@ -51,7 +51,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         style={magnetic ? { x, y } : undefined}
         onMouseMove={magnetic ? onMouseMove : undefined}
         onMouseLeave={magnetic ? onMouseLeave : undefined}
-        className="inline-block"
+        className={cn('inline-block', className?.includes('w-full') && 'w-full sm:w-auto')}
       >
         <Comp ref={forwardedRef} className={cn(buttonVariants({ variant, size, className }))} {...props}>
           {/* Sheen sweep on hover */}

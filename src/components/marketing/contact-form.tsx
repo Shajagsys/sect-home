@@ -1,9 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, Loader2, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ReCaptcha } from '@/components/ui/recaptcha';
+import { trackGAEvent } from '@/lib/ga4';
 
 const INTERESTS = [
   'VAPT — Vulnerability Assessment & Penetration Testing',
@@ -18,15 +20,42 @@ const INTERESTS = [
 const fieldClass =
   'w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-[15px] text-foreground placeholder:text-muted/70 transition-colors focus:border-primary/50 focus:bg-white/[0.05] focus:outline-none';
 
-/** Public lead-capture form for /contact. Posts to the existing /api/leads endpoint — no backend changes. */
+/** Public lead-capture form for /contact with Google reCAPTCHA protection. */
 export default function ContactForm() {
   const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [message, setMessage] = useState('');
+  const [captchaToken, setCaptchaToken] = useState('');
+  const hasStartedRef = useRef(false);
+
+  const handleFormFocus = useCallback(() => {
+    if (hasStartedRef.current) return;
+    hasStartedRef.current = true;
+    trackGAEvent('form_start', { form_name: 'contact' });
+  }, []);
+
+  const handleCaptchaChange = useCallback((token: string | null) => {
+    setCaptchaToken(token || '');
+    if (token) setStatus((prev) => (prev === 'error' ? 'idle' : prev));
+  }, []);
+
+  const handleCaptchaExpired = useCallback(() => {
+    setCaptchaToken('');
+  }, []);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
+    if (!captchaToken) {
+      setStatus('error');
+      setMessage('Please complete the reCAPTCHA verification before submitting.');
+      return;
+    }
+
     const form = e.currentTarget;
     const data: Record<string, unknown> = Object.fromEntries(new FormData(form).entries());
+
+    data['recaptchaToken'] = captchaToken;
+    data['g-recaptcha-response'] = captchaToken;
 
     const params = new URLSearchParams(window.location.search);
     for (const key of ['utm_source', 'utm_medium', 'utm_campaign']) {
@@ -46,7 +75,11 @@ export default function ContactForm() {
       if (!res.ok) throw new Error(body.error || 'Something went wrong. Please try again.');
       setStatus('success');
       setMessage('Thank you — our strategic security team will reach out shortly.');
+      setCaptchaToken('');
       form.reset();
+      // GA4's standard event name for lead-gen forms — recognised automatically
+      // for conversion reporting without extra setup in the GA4 UI.
+      trackGAEvent('generate_lead', { form_name: 'contact' });
     } catch (err) {
       setStatus('error');
       setMessage(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
@@ -70,7 +103,7 @@ export default function ContactForm() {
             <p className="mt-2 max-w-sm text-sm text-muted">{message}</p>
           </motion.div>
         ) : (
-          <motion.form key="form" onSubmit={handleSubmit} initial={{ opacity: 1 }} exit={{ opacity: 0 }}>
+          <motion.form key="form" onSubmit={handleSubmit} onFocus={handleFormFocus} initial={{ opacity: 1 }} exit={{ opacity: 0 }}>
             <div className="grid gap-5 sm:grid-cols-2">
               <div>
                 <label htmlFor="lead-name" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-muted">
@@ -117,6 +150,15 @@ export default function ContactForm() {
                 </label>
                 <textarea id="lead-message" name="message" rows={4} maxLength={2000} className={fieldClass} />
               </div>
+
+              {/* Google reCAPTCHA Verification */}
+              <div className="sm:col-span-2 mt-1">
+                <ReCaptcha
+                  siteKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '6LfCUoUtAAAAAIpXRBcZTYRG6aT7V_29OUZFsSt_'}
+                  onChange={handleCaptchaChange}
+                  onExpired={handleCaptchaExpired}
+                />
+              </div>
             </div>
 
             <div className="mt-7 flex items-center gap-4">
@@ -131,7 +173,7 @@ export default function ContactForm() {
               </Button>
               {status === 'error' && (
                 <span className="inline-flex items-center gap-1.5 text-sm font-medium text-red-400">
-                  <AlertCircle className="h-4 w-4" /> {message}
+                  <AlertCircle className="h-4 w-4 shrink-0" /> {message}
                 </span>
               )}
             </div>

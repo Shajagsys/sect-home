@@ -1,12 +1,14 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
-import { ShieldCheck, Facebook, Instagram, Linkedin, Youtube, ArrowRight } from 'lucide-react';
+import { Facebook, Instagram, Linkedin, Youtube, ArrowRight } from 'lucide-react';
 import { COMPANY, SOCIAL_LINKS } from '@/lib/company';
 import { Reveal } from '@/components/marketing/reveal';
 import { SocialIcon, type SocialAnimation } from '@/components/marketing/social-icon';
 import { XLogo } from '@/components/marketing/icons/x-logo';
+import { useCookieConsent } from '@/lib/cookie-consent';
 
 const SOCIAL_META: Record<string, { icon: React.ComponentType<{ className?: string }>; animation: SocialAnimation; color: string }> = {
   LinkedIn: { icon: Linkedin, animation: 'fill', color: '#0A66C2' },
@@ -67,6 +69,8 @@ function NewsletterForm() {
 }
 
 export default function Footer() {
+  const { openPreferences } = useCookieConsent();
+
   return (
     <footer className="relative overflow-hidden border-t border-white/[0.06] bg-black">
       <div className="pointer-events-none absolute -bottom-40 left-1/2 h-80 w-[60rem] -translate-x-1/2 rounded-full bg-primary/10 blur-[120px]" />
@@ -76,10 +80,13 @@ export default function Footer() {
           <div className="grid gap-12 border-b border-white/[0.06] pb-14 lg:grid-cols-[1.2fr_0.8fr_0.8fr_0.8fr_1fr]">
             <div>
               <Link href="/" className="flex items-center gap-2.5">
-                <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-light text-background">
-                  <ShieldCheck className="h-5 w-5" strokeWidth={2.4} />
-                </span>
-                <span className="font-display text-[15px] font-bold text-foreground">SecureEdge</span>
+                <Image
+                  src="/logo-dark-640.webp"
+                  alt="SecureEdge Cyber Technologies"
+                  width={320}
+                  height={84}
+                  className="h-10 w-auto"
+                />
               </Link>
               <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted">
                 Fortifying your digital assets, securing your tomorrow. Bespoke penetration testing,
@@ -148,7 +155,15 @@ export default function Footer() {
 
         <div className="flex flex-col items-center justify-between gap-4 pt-8 text-xs text-muted sm:flex-row">
           <p>© {new Date().getFullYear()} {COMPANY.name}. All rights reserved.</p>
-          <p className="text-muted/80">Security is a discipline, continuously practised.</p>
+          <div className="flex items-center gap-5">
+            <Link href="/cookie-policy" className="transition-colors hover:text-primary-light">
+              Cookie Policy
+            </Link>
+            <button type="button" onClick={openPreferences} className="transition-colors hover:text-primary-light">
+              Cookie Settings
+            </button>
+            <p className="hidden text-muted/80 sm:block">Security is a discipline, continuously practised.</p>
+          </div>
         </div>
       </div>
     </footer>

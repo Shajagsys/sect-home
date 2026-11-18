@@ -270,3 +270,4 @@ CREATE TABLE IF NOT EXISTS purchase_invoices (
 );
 
 CREATE INDEX IF NOT EXISTS idx_purchase_invoices_date ON purchase_invoices(bill_date);
+

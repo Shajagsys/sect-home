@@ -38,6 +38,29 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'A valid email is required' }, { status: 400 });
   }
 
+  // Google reCAPTCHA verification
+  const recaptchaToken = String(body['g-recaptcha-response'] || body.recaptchaToken || '').trim();
+  const secretKey = process.env.RECAPTCHA_SECRET_KEY || '6LfCUoUtAAAAAMLhr7TY-gNVZA5d5aqTVtkO7i70';
+
+  if (recaptchaToken && secretKey) {
+    try {
+      const verifyRes = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+          secret: secretKey,
+          response: recaptchaToken,
+        }),
+      });
+      const verifyData = await verifyRes.json();
+      if (!verifyData.success) {
+        console.warn('reCAPTCHA siteverify result:', verifyData);
+      }
+    } catch (err) {
+      console.error('reCAPTCHA verification error:', err);
+    }
+  }
+
   try {
     const result = await query<{ id: number }>(
       `INSERT INTO leads (name, email, phone, company, interest, message, source,

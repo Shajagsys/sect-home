@@ -6,9 +6,27 @@ import CareerWhy from '@/components/marketing/sections/career-why';
 import CareerOffer from '@/components/marketing/sections/career-offer';
 import CareerOpportunities from '@/components/marketing/sections/career-opportunities';
 
+const careersTitle = 'Cybersecurity Careers & Opportunities';
+const careersDescription =
+  'Explore career opportunities at SecureEdge Cyber Technologies — VAPT specialists, security assessors, and strategic advisory consultants.';
+
 export const metadata: Metadata = {
-  title: 'Careers',
-  description: 'Build your career at SecureEdge Cyber Technologies — VAPT, compliance and strategic advisory.',
+  title: careersTitle,
+  description: careersDescription,
+  alternates: {
+    canonical: '/careers',
+  },
+  openGraph: {
+    title: `${careersTitle} · SecureEdge Cyber Technologies`,
+    description: careersDescription,
+    url: 'https://secureedgecyber.com/careers',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `${careersTitle} · SecureEdge Cyber Technologies`,
+    description: careersDescription,
+  },
 };
 
 export default function CareersPage() {

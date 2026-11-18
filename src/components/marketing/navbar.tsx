@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Menu, ShieldCheck, X, ChevronDown, ArrowRight } from 'lucide-react';
+import { Menu, X, ChevronDown, ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { SERVICES } from '@/lib/services-data';
@@ -56,17 +57,14 @@ export default function Navbar() {
         )}
       >
         <Link href="/" className="group flex items-center gap-2.5">
-          <span className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-light text-background shadow-glow transition-transform duration-300 group-hover:scale-105">
-            <ShieldCheck className="h-5 w-5" strokeWidth={2.4} />
-          </span>
-          <span className="hidden flex-col leading-none sm:flex">
-            <span className="font-display text-[15px] font-bold tracking-tight text-foreground">
-              SecureEdge
-            </span>
-            <span className="text-[10px] font-medium uppercase tracking-[0.16em] text-muted">
-              Cyber Technologies
-            </span>
-          </span>
+          <Image
+            src="/logo-dark-640.webp"
+            alt="SecureEdge Cyber Technologies"
+            width={320}
+            height={84}
+            priority
+            className="h-10 w-auto transition-opacity duration-300 group-hover:opacity-85"
+          />
         </Link>
 
         <nav className="hidden items-center gap-1 xl:flex">

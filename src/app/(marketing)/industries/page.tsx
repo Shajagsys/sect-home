@@ -5,10 +5,27 @@ import PageHero from '@/components/marketing/sections/page-hero';
 import IndustriesGrid from '@/components/marketing/sections/industries-grid';
 import ClosingCta from '@/components/marketing/sections/closing-cta';
 
+const industriesTitle = 'Industry-Specific Cybersecurity & Compliance Solutions';
+const industriesDescription =
+  'Regulation-calibrated security testing for BFSI, Healthcare, SaaS, E-commerce, Logistics, EdTech, and Government sectors.';
+
 export const metadata: Metadata = {
-  title: 'Industries',
-  description:
-    'SecureEdge serves BFSI, Healthcare, SaaS, E-commerce, Logistics, EdTech and Government sectors with regulation-calibrated security testing.',
+  title: industriesTitle,
+  description: industriesDescription,
+  alternates: {
+    canonical: '/industries',
+  },
+  openGraph: {
+    title: `${industriesTitle} · SecureEdge Cyber Technologies`,
+    description: industriesDescription,
+    url: 'https://secureedgecyber.com/industries',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `${industriesTitle} · SecureEdge Cyber Technologies`,
+    description: industriesDescription,
+  },
 };
 
 export default function IndustriesPage() {

@@ -1,4 +1,5 @@
 /* Applies db/schema.sql plus db/migrations/*.sql (in order) to DATABASE_URL. */
+require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const { Client } = require('pg');

@@ -7,10 +7,27 @@ import ComplianceSprint from '@/components/marketing/sections/compliance-sprint'
 import AccreditationsBlock from '@/components/marketing/sections/accreditations-block';
 import ClosingCta from '@/components/marketing/sections/closing-cta';
 
+const complianceTitle = 'ISO 27001, SOC 2, PCI DSS & DPDP Act Compliance Audits';
+const complianceDescription =
+  'End-to-end support for ISO 27001, SOC 2, PCI DSS, DPDP Act, GDPR, and HIPAA certification readiness and compliance audits.';
+
 export const metadata: Metadata = {
-  title: 'Compliance & Certifications',
-  description:
-    'ISO 27001, SOC 2, PCI DSS, DPDP Act, GDPR and HIPAA certification support from SecureEdge Cyber Technologies.',
+  title: complianceTitle,
+  description: complianceDescription,
+  alternates: {
+    canonical: '/compliance',
+  },
+  openGraph: {
+    title: `${complianceTitle} · SecureEdge Cyber Technologies`,
+    description: complianceDescription,
+    url: 'https://secureedgecyber.com/compliance',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `${complianceTitle} · SecureEdge Cyber Technologies`,
+    description: complianceDescription,
+  },
 };
 
 export default function CompliancePage() {

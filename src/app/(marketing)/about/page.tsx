@@ -11,15 +11,43 @@ import CaseStudiesFull from '@/components/marketing/sections/case-studies-full';
 import AccreditationsBlock from '@/components/marketing/sections/accreditations-block';
 import ClosingCta from '@/components/marketing/sections/closing-cta';
 
+import { JsonLd } from '@/components/marketing/json-ld';
+
+const aboutTitle = 'About Us | Cybersecurity Consultancy';
+const aboutDescription =
+  'Learn about SecureEdge Cyber Technologies — our ethos, technical advantage, accreditations, and evidence-driven vulnerability testing methodology.';
+
 export const metadata: Metadata = {
-  title: 'About Us',
-  description:
-    'SecureEdge Cyber Technologies is a premier cybersecurity consultancy — our ethos, advantage, distinction and accreditations.',
+  title: aboutTitle,
+  description: aboutDescription,
+  alternates: {
+    canonical: '/about',
+  },
+  openGraph: {
+    title: `${aboutTitle} · SecureEdge Cyber Technologies`,
+    description: aboutDescription,
+    url: 'https://secureedgecyber.com/about',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `${aboutTitle} · SecureEdge Cyber Technologies`,
+    description: aboutDescription,
+  },
+};
+
+const aboutPageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: 'About SecureEdge Cyber Technologies',
+  description: aboutDescription,
+  url: 'https://secureedgecyber.com/about',
 };
 
 export default function AboutPage() {
   return (
     <>
+      <JsonLd data={aboutPageSchema} />
       <Navbar />
       <main>
         <PageHero

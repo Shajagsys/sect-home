@@ -5,6 +5,7 @@
  *
  * ⚠ DEMO CREDENTIALS ONLY — change or delete these before going live.
  */
+require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const { Client } = require('pg');
 
